@@ -12,3 +12,9 @@ export interface ProductItems {
 export interface ProductFields {
     field: string;
 }
+
+export interface SearchParams {
+    product?: string;
+    brand?: string
+    price?: number;
+}

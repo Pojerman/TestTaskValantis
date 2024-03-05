@@ -1,5 +1,7 @@
 import "./pagination.css";
-import React from "react";
+import React, {useEffect, useState} from "react";
+import usePagination from "../../shared/hooks/usePagination.ts";
+import {DOTS} from "../../shared/constants/const.ts";
 
 type PaginationProps = {
     currentPage: number;
@@ -7,8 +9,22 @@ type PaginationProps = {
     totalPages: number;
 }
 
-
 export default function Pagination({currentPage, onPageChange, totalPages}:PaginationProps) {
+    const paginationRange = usePagination(totalPages, currentPage);
+
+    const [isMobile, setIsMobile] = useState(window.innerWidth <= 600);
+
+    useEffect(() => {
+        const handleResize = () => {
+            setIsMobile(window.innerWidth <= 600);
+        };
+
+        window.addEventListener("resize", handleResize);
+
+        return () => {
+            window.removeEventListener("resize", handleResize);
+        };
+    }, []);
 
     const handlePageClick = (page: number, event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
         event.preventDefault();
@@ -18,17 +34,33 @@ export default function Pagination({currentPage, onPageChange, totalPages}:Pagin
 
     return (
         <div className="pagination">
-            <a href="#" onClick={(event) => handlePageClick(currentPage - 1, event)}>&laquo;</a>
-            {Array.from({length: totalPages}, (_, index) => (
-                <a
-                    key={index + 1}
-                    href="#"
-                    className={currentPage === index + 1 ? "active" : ""}
-                    onClick={(event) => handlePageClick(index + 1, event)}>
-                    {index + 1}
+            <a href="#" onClick={(event) => handlePageClick(currentPage - 1, event)}>
+                &laquo;
+            </a>
+            {isMobile ?
+                <a href="#">
+                    {currentPage}
                 </a>
-            ))}
-            <a href="#" onClick={(event) => handlePageClick(currentPage + 1, event)}>&raquo;</a>
+                :
+                paginationRange.map((page, index) => (
+                    <React.Fragment key={index}>
+                        {page === DOTS ? (
+                            <span>{DOTS}</span>
+                        ) : (
+                            <a
+                                href="#"
+                                className={currentPage === page ? 'active' : ''}
+                                onClick={(event) => handlePageClick(Number(page), event)}
+                            >
+                                {page}
+                            </a>
+                        )}
+                    </React.Fragment>
+                ))
+            }
+            <a href="#" onClick={(event) => handlePageClick(currentPage + 1, event)}>
+                &raquo;
+            </a>
         </div>
-    )
+    );
 }

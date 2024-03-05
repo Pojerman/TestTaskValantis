@@ -1,16 +1,19 @@
-import {ProductItems} from "../../entities/types/products.ts";
+import {ProductItems} from "../../shared/types/products.ts";
 import Product from "../../entities/product/product.tsx";
 import {uniqueProductItems} from "../../shared/utils/utils.ts";
 import "./product-list.css";
 import ProductLoading from "../../entities/product-loading/product-loading.tsx";
+import {useMemo} from "react";
 
 type ProductListProps = {
-    productItems: ProductItems[] | null;
+    productItems: ProductItems[];
     loading: boolean;
 }
 
 export default function ProductList({productItems, loading}:ProductListProps) {
-    if(loading || productItems === null) {
+    const uniqueProduct = useMemo(() => uniqueProductItems(productItems), [productItems]);
+
+    if(loading) {
         return (
             <div className="product-list container">
                 {Array.from({length: 49}, (_, index) => (
@@ -19,9 +22,6 @@ export default function ProductList({productItems, loading}:ProductListProps) {
             </div>
         )
     }
-
-
-    const uniqueProduct = uniqueProductItems(productItems);
 
     return (
         <div className="product-list container">

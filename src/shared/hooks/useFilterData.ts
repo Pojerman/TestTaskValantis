@@ -1,6 +1,6 @@
 import {useEffect, useState} from "react";
-import {getBrands} from "../../../shared/api/api.ts";
-import {uniqueProductBrand} from "../../../shared/utils/utils.ts";
+import {getBrands} from "../api/api.ts";
+import {uniqueProductBrand} from "../utils/utils.ts";
 
 const useFilterData = () => {
     const [brand, setBrand] = useState<string[]>([])
@@ -8,18 +8,19 @@ const useFilterData = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await getBrands("brand", 0);
+                const response = await getBrands("brand");
                 const uniqueProductBrands = uniqueProductBrand(response);
                 setBrand(uniqueProductBrands);
             } catch (error) {
-                console.log(error)
+                console.error(error);
+                throw error;
             }
         }
 
         fetchData()
     }, []);
 
-    return {brand}
+    return brand;
 }
 
 export default useFilterData;

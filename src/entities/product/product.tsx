@@ -1,6 +1,6 @@
-import {ProductItems} from "../types/products.ts";
+import {ProductItems} from "../../shared/types/products.ts";
 import "./product.css";
-import ProductImg from "../../assets/product.jpg";
+import ProductImg from "../../shared/assets/product.jpg";
 import ProductButton from "../../features/product-button/product-button.tsx";
 
 type ProductProps = {
